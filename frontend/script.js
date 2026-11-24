@@ -1,29 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>J.A.R.V.I.S</title>
-<style>
-body{background:#000;color:#00e5ff;font-family:monospace;text-align:center}
-#chat{height:300px;overflow-y:auto;border:1px solid #00e5ff;padding:10px;text-align:left}
-.msg{margin:8px;padding:8px;border-radius:8px}
-.user{background:#003a4a;color:#fff}
-.ai{background:#001a20}
-input{width:70%;padding:10px}
-button{padding:10px;background:#00e5ff;border:none;font-weight:bold}
-</style>
-</head>
-<body>
 
-<h1>J.A.R.V.I.S</h1>
-<div id="chat"></div>
-<br>
-<input id="msg" placeholder="Talk to Jarvis...">
-<button id="send">SEND</button>
-<button id="mic-btn">🎙</button>
-
-<script>
 // ===== 1. API KEY =====
 let API_KEY = localStorage.getItem('jarvis_key');
 
@@ -126,7 +101,3 @@ function add(t, w){
   d.innerText = t;
   chat.appendChild(d);
   chat.scrollTop = chat.scrollHeight;
-}
-</script>
-</body>
-</html>
