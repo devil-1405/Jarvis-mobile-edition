@@ -1,19 +1,411 @@
+/
+le
+/
+t
+=
+A
+==
+P
+=
+I_
+=
+K
+1
+E
+.
+Y
+A
+=
+PI
+lo
+K
+c
+E
+a
+Y
+lS
+(
+to
+S
+r
+a
+a
+f
+g
+e
+e
+:
+.
+b
+g
+r
+e
+o
+t
+w
+It
+s
+e
+e
+m
+r
+(
+ల
+'j
+ో
+ar
+మ
+vis
+ా
+_
+త్ర
+k
+మే
+ey
+)
+')
+=
+;
+====
+if(!API_KEY){
+API_KEY = prompt('Enter your Gemini API Key:');
+if(API_KEY) localStorage.setItem('jarvis_key', API_KEY);
+}
+/
+c
+/
+o
+=
+n
+=
+s
+=
+t
+=
+M
+=
+O
+2
+D
+.
+E
+S
+L
+M
+S
+A
+=
+RT
+["g
+M
+e
+O
+m
+D
+in
+E
+i-
+L
+3
+S
+.6-
+(
+f
+ఒ
+la
+క
+s
+టి
+h"
+f
+,
+a
+"
+il
+g
+అ
+em
+యి
+in
+త
+i
+ే
+-f
+n
+la
+e
+s
+x
+h
+t
+-
+a
+la
+u
+t
+t
+e
+o
+s
+t
+t
+r
+"
+y
+];
+) =====
 const chat=document.getElementById('chat');
 const input=document.getElementById('msg');
-document.getElementById('send').onclick=()=>{
- const t=input.value.trim();
- if(!t)return;
- add('YOU: '+t,'user');
- input.value='';
- add('J.A.R.V.I.S: Processing...','ai');
- setTimeout(()=>{
- chat.lastChild.innerText='J.A.R.V.I.S: Systems online. How may I assist you, Boss?';
- },1000);
-};
-function add(text,who){
- const d=document.createElement('div');
- d.className='msg '+who;
- d.innerText=text;
- chat.appendChild(d);
- chat.scrollTop=chat.scrollHeight;
+const micBtn=document.getElementById('mic-btn');
+// ===== 3. GEMINI BRAIN (auto-fallback) =====
+async function callGemini(p){  
+let lastErr;
+for(const m of MODELS){
+try{
+const res=await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models/"+m+":generateContent?key="
++API_KEY,
+{method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({contents:[{parts:[{text:p}]}]})});
+const data=await res.json();
+if(data.error){
+lastErr=new Error(data.error.message);
+if(/high demand|temporar|quota|rate|unavailable|no longer
+available|deprecated/i.test(data.error.message)) continue;
+throw lastErr;
 }
+return data.candidates[0].content.parts[0].text;
+}catch(e){ lastErr=e; }
+}
+throw lastErr;
+}
+async function askGemini(p){
+add('J.A.R.V.I.S: Thinking...','ai');
+try{
+const reply=await callGemini(p);
+chat.lastChild.innerText='J.A.R.V.I.S: '+reply;
+}c
+s
+a
+p
+t
+e
+c
+a
+h
+k
+(e
+(r
+)
+e
+{
+ply); // reply వచ్చి న వెంట ే న VOICE
+chat.lastChild.innerText='J.A.R.V.I.S: ERROR - '+e.message;
+}
+}
+/
+c
+/
+o
+=
+n
+=
+s
+=
+t
+=
+S
+=
+R
+4
+=
+.
+w
+S
+in
+P
+d
+E
+o
+E
+w
+C
+.S
+H
+pe
+R
+e
+E
+c
+C
+hR
+O
+e
+G
+c
+N
+o
+I
+g
+T
+n
+I
+i
+O
+tio
+N
+n
+(
+||
+వి
+w
+న
+in
+డ
+d
+ం
+o
+)
+w
+=
+.
+=
+w
+=
+e
+=
+b
+=
+kitSpeechRecognition;
+c
+re
+o
+c
+n
+.
+s
+o
+t
+n
+r
+r
+e
+e
+c
+s
+=
+u
+n
+lt
+e
+=
+w
+(e)
+S
+=
+R
+>
+(
+{
+)
+c
+;
+o
+r
+n
+e
+s
+c
+t
+.l
+t
+a
+=
+n
+e
+g
+.r
+=
+e
+'e
+s
+n
+u
+-
+lt
+U
+s[
+S
+0
+'
+]
+;
+[0
+//
+].
+T
+t
+e
+ra
+lu
+n
+g
+s
+u
+cr
+క
+i
+ి
+p
+'
+t
+t
+;
+e
+a
+-
+d
+IN
+d(
+'
+'YOU: '+t,'user');askGemini(t);};
+micBtn.onclick=()=>{rec.start();micBtn.innerText='LISTENING...';};
+rec.onend=()=>{micBtn.innerText='🎙';};
+/
+le
+/
+t
+=
+v
+=
+o
+=
+i
+=
+ce
+=
+s
+5
+=
+.
+[]
+T
+;
+EXT-TO-SPEECH (మాట్లా డటం) =====
+function loadVoices(){ voices=speechSynthesis.getVoices(); }
+loadVoices();
+speechSynthesis.onvoiceschanged=loadVoices;
+function speak(t){
+const u=new SpeechSynthesisUtterance(t);
+u.rate=1.05; u.pitch=0.85;
+const v=voices.find(v=>v.lang.startsWith('en'));
+if(v) u.voice=v;
+speechSynthesis.speak(u);
+}
+// ===== 6. TEXT SEND BUTTON =====
+document.getElementById('send').onclick=()=>{
+const t=input.value.trim(); if(!t)return;
+add('YOU: '+t,'user'); input.value=''; askGemini(t);
+};
+function add(t,w){const d=document.createElement('div');d.className='msg
+'+w;d.innerText=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
